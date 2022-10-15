@@ -8,8 +8,8 @@ use App\Services\Telegram\TelegramBotApi;
 
 class TelegramLoggingHandler extends AbstractProcessingHandler
 {
-    protected $chatId;
-    protected $token;
+    protected int $chatId;
+    protected string $token;
 
     public function __construct(array $config)
     {
