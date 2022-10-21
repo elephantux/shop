@@ -13,16 +13,10 @@ class ProductFactory extends Factory
 {
     public function definition(): array
     {
-        # TODO: сделать в отдельном кастомном провайдере
-        # передавать директории, создавать если их нет, возвращать название с путём
         return [
             'title' => ucfirst($this->faker->words(2, true)),
             'brand_id' => Brand::query()->inRandomOrder()->value('id'),
-            'thumbnail' => $this->faker->file(
-                base_path('tests/Fixtures/images/products'),
-                storage_path('app/public/images/products'),
-                false
-            ),
+            'thumbnail' => $this->faker->getRandomImage('tests/Fixtures/images/products', 'public/images/products'),
             'price' => $this->faker->numberBetween(1000, 100000)
         ];
     }
