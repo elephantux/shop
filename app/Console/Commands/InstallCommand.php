@@ -9,13 +9,8 @@ class InstallCommand extends Command
 
     protected $signature = 'shop:install';
     protected $description = 'Shop installation';
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    
+    public function handle(): int
     {
         $this->call('storage:link');
         $this->call('migrate');
