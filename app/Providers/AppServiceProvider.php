@@ -10,42 +10,20 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         Model::shouldBeStrict(app()->isLocal());
 
         if (app()->isProduction()) {
-            DB::whenQueryingForLongerThan(CarbonInterval::seconds(5), function (Connection $connection) {
-                logger()
-                    ->channel('telegram')
-                    ->debug('whenQueryingForLongerThan: ' . $connection->query()->toSql());
-            });
-
             DB::listen(function ($query) {
                 if ($query->time > 100) {
                     logger()
                         ->channel('telegram')
-                        ->debug('whenQueryingForLongerThan: ' . $query->sql, $query->bindings);
+                        ->debug('query longer than 1s: ' . $query->sql, $query->bindings);
                 }
             });
 
-            $kernel = app(Kernel::class);
-            $kernel->whenRequestLifecycleIsLongerThan(
+            app(Kernel::class)->whenRequestLifecycleIsLongerThan(
                 CarbonInterval::seconds(4),
                 function () {
                     logger()
