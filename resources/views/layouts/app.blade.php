@@ -10,5 +10,12 @@
 </head>
 <body class="antialiased">
 
+@if($flash = flash()->get())
+    <div class="{{ $flash->getClass() }} p-5">
+        {{ $flash->getMessage() }}
+    </div>
+@endif
+
+@yield('content')
 </body>
 </html>

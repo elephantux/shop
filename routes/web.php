@@ -8,10 +8,10 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::controller(AuthController::class)->group(function(){
     Route::get('/login', 'index')->name('login');
-    Route::post('/login', 'signIn')->name('signin');
+    Route::post('/login', 'signIn')->middleware('throttle:auth')->name('signin');
 
     Route::get('/signup', 'signUp')->name('signup');
-    Route::post('/signup', 'store')->name('store');
+    Route::post('/signup', 'store')->middleware('throttle:auth')->name('store');
 
     Route::delete('/logout', 'logout')->name('logout');
 

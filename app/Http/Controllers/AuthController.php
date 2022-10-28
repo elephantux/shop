@@ -19,6 +19,9 @@ class AuthController extends Controller
 {
     public function index()
     {
+        flash()->alert('Hello');
+        return redirect()->route('home');
+
         return view('auth.index');
     }
 
@@ -29,7 +32,6 @@ class AuthController extends Controller
 
     public function forgot()
     {
-
         return view('auth.forgot-password');
     }
 
@@ -53,7 +55,6 @@ class AuthController extends Controller
 
     public function resetPasswors(ResetPasswordFormRequest $request)
     {
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -74,7 +75,6 @@ class AuthController extends Controller
 
     public function signIn(SignInFormRequest $request): RedirectResponse
     {
-
         if (!auth()->attempt($request->validated())) {
             return back()->withErrors([
                 'email' => 'The provided credentials do not match our records.',
@@ -88,7 +88,6 @@ class AuthController extends Controller
 
     public function store(SignUpFormRequest $request): RedirectResponse
     {
-
         $user = User::create($request->validated());
 
         event(new Registered($user));
@@ -125,7 +124,7 @@ class AuthController extends Controller
             'password' => bcrypt(Str::random(8)),
         ]);
 
-        if(!$user->wasRecentlyCreated) {
+        if (!$user->wasRecentlyCreated) {
             $user->update(['github_id' => $githubUser->id]);
         }
 
