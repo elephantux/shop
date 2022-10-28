@@ -19,9 +19,6 @@ class AuthController extends Controller
 {
     public function index()
     {
-        flash()->alert('Hello');
-        return redirect()->route('home');
-
         return view('auth.index');
     }
 
