@@ -18,6 +18,7 @@ class RefreshCommand extends Command
         }
 
         File::cleanDirectory(Storage::path('public/images/products'));
+        File::cleanDirectory(Storage::path('public/images/brands'));
 
         $this->call('migrate:fresh', [
             '--seed' => true
