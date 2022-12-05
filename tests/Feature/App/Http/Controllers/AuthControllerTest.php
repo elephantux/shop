@@ -47,8 +47,8 @@ class AuthControllerTest extends TestCase
     {
         $pass = '123456789';
         $user = User::factory()->create([
-            'email' => 'slon@offline.lv',
-            'password' => bcrypt($pass)
+            'email' => 'test@mail.ru',
+            'password' => $pass
         ]);
 
         $request = SignInFormRequest::factory()->create([

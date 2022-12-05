@@ -1,10 +1,10 @@
 import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
-import basicSsl from '@vitejs/plugin-basic-ssl'
+import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig({
     plugins: [
-        basicSsl(),
+        mkcert(),
         laravel({
             input: [
                 'resources/css/app.css',
