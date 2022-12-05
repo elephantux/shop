@@ -65,6 +65,17 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
+    public function it_logout_success()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@mail.ru',
+        ]);
+
+        $this->actingAs($user)->delete(action([AuthController::class, 'logout']));
+        $this->assertGuest();
+    }
+
+    /** @test */
     public function it_store_succes(): void
     {
         Notification::fake();
