@@ -3,14 +3,18 @@
 namespace Tests\Feature\App\Http\Controllers;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Requests\ResetPasswordFormRequest;
 use App\Http\Requests\SignInFormRequest;
 use App\Http\Requests\SignUpFormRequest;
 use App\Listeners\SendEmailNewUserListener;
 use App\Models\User;
 use App\Notifications\NewUserNotification;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
@@ -48,7 +52,7 @@ class AuthControllerTest extends TestCase
         $pass = '123456789';
         $user = User::factory()->create([
             'email' => 'test@mail.ru',
-            'password' => $pass
+            'password' => Hash::make($pass)
         ]);
 
         $request = SignInFormRequest::factory()->create([
@@ -73,6 +77,37 @@ class AuthControllerTest extends TestCase
 
         $this->actingAs($user)->delete(action([AuthController::class, 'logout']));
         $this->assertGuest();
+    }
+
+    /** @test */
+    public function it_reset_success()
+    {
+        Event::fake();
+        $user = User::factory()->create([
+            'email' => 'test@mail.ru',
+        ]);
+
+        $token = Password::broker()->createToken($user);
+        $password = $user->password;
+        $newPassword = '123123123';
+
+        $request = ResetPasswordFormRequest::factory()->create([
+            'email' => $user->email,
+            'password' => $newPassword,
+            'password_confirmation' => $newPassword,
+            'token' => $token,
+        ]);
+
+        $reposnse = $this->post(action([AuthController::class, 'resetPassword']), $request);
+        Event::assertDispatched(PasswordReset::class);
+
+        $reposnse->assertValid()
+            ->assertRedirect(route('login'));
+
+        $user->refresh();
+
+        $this->assertFalse(Hash::check($password, $user->password));
+        $this->assertTrue(Hash::check($newPassword, $user->password));
     }
 
     /** @test */

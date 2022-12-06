@@ -54,7 +54,7 @@ class AuthController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function resetPasswors(ResetPasswordFormRequest $request)
+    public function resetPassword(ResetPasswordFormRequest $request)
     {
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
