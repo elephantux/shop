@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Telegram;
+namespace Services\Telegram;
 
 use App\Exceptions\TelegramMessageNotSentException;
 use Illuminate\Support\Facades\Http;
@@ -9,7 +9,7 @@ use Throwable;
 class TelegramBotApi
 {
     public const HOST = 'https://api.telegram.org/bot';
-    
+
     public static function sendMessage(string $token, int $chatId, string $text): bool
     {
         # TODO: получать json ответ и возвращать в методе boolean
