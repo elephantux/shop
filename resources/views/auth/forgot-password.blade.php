@@ -18,7 +18,7 @@
                     <a href="{{ route('login') }}" class="text-white hover:text-white/70 font-bold">Вход</a>
                 </div>
                 <div class="text-xxs md:text-xs">
-                    <a href="{{ route('signup') }}" class="text-white hover:text-white/70 font-bold">Регистрация</a>
+                    <a href="{{ route('register') }}" class="text-white hover:text-white/70 font-bold">Регистрация</a>
                 </div>
             </div>
         </x-slot:links>
