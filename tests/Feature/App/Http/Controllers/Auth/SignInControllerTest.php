@@ -24,7 +24,7 @@ class SignInControllerTest extends TestCase
     {
         $pass = '123456789';
         $user = UserFactory::new()->create([
-            'email' => 'test@mail.ru',
+            'email' => 'test@offline.lv',
             'password' => Hash::make($pass)
         ]);
 
@@ -45,7 +45,7 @@ class SignInControllerTest extends TestCase
     public function it_logout_success()
     {
         $user = UserFactory::new()->create([
-            'email' => 'test@mail.ru',
+            'email' => 'test@offline.lv',
         ]);
 
         $this->actingAs($user)->delete(action([SignInController::class, 'logout']));

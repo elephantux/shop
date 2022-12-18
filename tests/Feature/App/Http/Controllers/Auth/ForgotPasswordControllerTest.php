@@ -26,7 +26,7 @@ class ForgotPasswordControllerTest extends TestCase
     public function it_forgot_password_success(): void
     {
         $user = UserFactory::new()->create([
-            'email' => 'test@mail.ru',
+            'email' => 'test@offline.lv',
         ]);
 
         $request = ForgotPasswordFormRequest::factory()->create([
@@ -39,5 +39,18 @@ class ForgotPasswordControllerTest extends TestCase
             ->assertStatus(302);
 
         Notification::assertSentTo($user, ResetPassword::class);
+    }
+
+    /** @test */
+    public function it_forgot_password_failure(): void
+    {
+        $request = ForgotPasswordFormRequest::factory()->create([
+            'email' => 'test@offline.lv'
+        ]);
+
+        $response = $this->post(action([ForgotPasswordController::class, 'handle']), $request);
+        $response->assertInvalid()
+            ->assertSessionHasErrors(['email'])
+            ->assertStatus(302);
     }
 }
