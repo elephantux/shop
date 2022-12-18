@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\App\Http\Controllers;
 
-use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SignInController;
 use App\Http\Controllers\Auth\SignUpController;
@@ -39,15 +38,6 @@ class AuthControllerTest extends TestCase
             ->assertOk()
             ->assertSee('Регистрация')
             ->assertViewIs('auth.signup');
-    }
-
-    /** @test */
-    public function it_forgot_page_success(): void
-    {
-        $this->get(action([ForgotPasswordController::class, 'page']))
-            ->assertOk()
-            ->assertSee('Восстановление пароля')
-            ->assertViewIs('auth.forgot-password');
     }
 
     /** @test */
