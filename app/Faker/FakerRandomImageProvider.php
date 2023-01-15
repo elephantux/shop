@@ -19,6 +19,6 @@ class FakerRandomImageProvider extends Base
             false
         );
 
-        return "/storage/app/$toPath/$path";
+        return "$toPath/$path";
     }
 }

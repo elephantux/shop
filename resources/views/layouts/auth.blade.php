@@ -10,11 +10,7 @@
 </head>
 <body class="antialiased">
 
-@if($flash = flash()->get())
-    <div class="{{ $flash->getClass() }} p-5">
-        {{ $flash->getMessage() }}
-    </div>
-@endif
+@include('shared.flash ')
 
 <main class="md:min-h-screen md:flex md:items-center md:justify-center py-16 lg:py-20">
     <div class="container">

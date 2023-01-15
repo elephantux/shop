@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,5 +22,10 @@ class DatabaseSeeder extends Seeder
         Category::factory(50)
             ->has(Product::factory(rand(10, 35)))
             ->create();
+        UserFactory::new()->create([
+            'name' => 'Yury Boichuk',
+            'email' => 'slon@offline.lv',
+            'password' => bcrypt('123123'),
+        ]);
     }
 }
