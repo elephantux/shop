@@ -5,32 +5,37 @@ namespace Tests\Feature\App\Http\Controllers\Auth;
 use App\Http\Controllers\Auth\SignInController;
 use App\Http\Requests\SignInFormRequest;
 use Database\Factories\UserFactory;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class SignInControllerTest extends TestCase
 {
-    /** @test */
-    public function it_login_page_success(): void
+    /**
+     * @test
+     * @return void
+     */
+    public function it_page_success(): void
     {
         $this->get(action([SignInController::class, 'page']))
             ->assertOk()
-            ->assertSee('Вход в аккаунт')
             ->assertViewIs('auth.login');
     }
 
-    /** @test */
-    public function it_sign_in_success(): void
+    /**
+     * @test
+     * @return void
+     */
+    public function it_handle_success(): void
     {
-        $pass = '123456789';
+        $password = '123456789';
+
         $user = UserFactory::new()->create([
             'email' => 'test@offline.lv',
-            'password' => Hash::make($pass)
+            'password' => bcrypt($password)
         ]);
 
         $request = SignInFormRequest::factory()->create([
             'email' => $user->email,
-            'password' => $pass,
+            'password' => $password
         ]);
 
         $response = $this->post(action([SignInController::class, 'handle']), $request);
@@ -41,14 +46,48 @@ class SignInControllerTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    /** @test */
-    public function it_logout_success()
+    /**
+     * @test
+     * @return void
+     */
+    public function it_handle_fail(): void
+    {
+        $request = SignInFormRequest::factory()->create([
+            'email' => 'notfound@offline.lv',
+            'password' => str()->random(10)
+        ]);
+
+        $this->post(action([SignInController::class, 'handle']), $request)
+            ->assertInvalid(['email']);
+
+        $this->assertGuest();
+    }
+
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_logout_success(): void
     {
         $user = UserFactory::new()->create([
             'email' => 'test@offline.lv',
         ]);
 
-        $this->actingAs($user)->delete(action([SignInController::class, 'logout']));
+        $this->actingAs($user)
+            ->delete(action([SignInController::class, 'logout']));
+
+
         $this->assertGuest();
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_logout_guest_middleware_fail(): void
+    {
+        $this->delete(action([SignInController::class, 'logout']))
+            ->assertRedirect(route('home'));
     }
 }

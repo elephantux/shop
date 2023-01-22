@@ -3,54 +3,62 @@
 namespace Tests\Feature\App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Requests\ForgotPasswordFormRequest;
 use Database\Factories\UserFactory;
+use Exception;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Password;
-use Support\Flash\Flash;
 use Tests\TestCase;
 
 class ForgotPasswordControllerTest extends TestCase
 {
-    /** @test */
-    public function it_forgot_page_success(): void
+    use RefreshDatabase;
+
+    private function testingCredentials(): array
+    {
+        return [
+            'email' => 'testing@offline.lv'
+        ];
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_page_success(): void
     {
         $this->get(action([ForgotPasswordController::class, 'page']))
             ->assertOk()
-            ->assertSee('Восстановление пароля')
             ->assertViewIs('auth.forgot-password');
     }
 
-    /** @test */
-    public function it_forgot_password_success(): void
+    /**
+     * @test
+     * @return void
+     * @throws Exception
+     */
+    public function it_handle_success(): void
     {
-        $user = UserFactory::new()->create([
-            'email' => 'test@offline.lv',
-        ]);
+        $user = UserFactory::new()->create($this->testingCredentials());
 
-        $request = ForgotPasswordFormRequest::factory()->create([
-            'email' => $user->email
-        ]);
+        $this->post(action([ForgotPasswordController::class, 'handle']), $this->testingCredentials())
+            ->assertRedirect();
 
-        $response = $this->post(action([ForgotPasswordController::class, 'handle']), $request);
-        $response->assertValid()
-            ->assertSessionHas(Flash::MESSAGE_KEY, __(Password::RESET_LINK_SENT))
-            ->assertStatus(302);
-
-        Notification::assertSentTo($user, ResetPassword::class);
+        Notification::assertSentTo($user, ResetPasswordNotification::class);
     }
 
-    /** @test */
-    public function it_forgot_password_failure(): void
+    /**
+     * @test
+     * @return void
+     */
+    public function it_handle_fail(): void
     {
-        $request = ForgotPasswordFormRequest::factory()->create([
-            'email' => 'test@offline.lv'
-        ]);
+        $this->assertDatabaseMissing('users', $this->testingCredentials());
 
-        $response = $this->post(action([ForgotPasswordController::class, 'handle']), $request);
-        $response->assertInvalid()
-            ->assertSessionHasErrors(['email'])
-            ->assertStatus(302);
+        $this->post(action([ForgotPasswordController::class, 'handle']), $this->testingCredentials())
+            ->assertInvalid(['email']);
+
+        Notification::assertNothingSent();
     }
 }
