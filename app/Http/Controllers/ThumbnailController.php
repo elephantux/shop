@@ -8,12 +8,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ThumbnailController extends Controller
 {
-    public function __invoke(
-        string $dir,
-        string $method,
-        string $size,
-        string $file
-    ): BinaryFileResponse {
+    public function __invoke(string $dir, string $method, string $size, string $file): BinaryFileResponse
+    {
         abort_if(!in_array($size, config('thumbnail.allowed_sizes', [])), 403, 'Size not allowed');
 
         $storage = Storage::disk('images');

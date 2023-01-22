@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Throwable;
 
 class TelegramMessageNotSentException extends Exception
@@ -12,7 +13,7 @@ class TelegramMessageNotSentException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
-    public function render($request)
+    public function render($request): JsonResponse
     {
         return response()->json(["error" => true, "message" => $this->getMessage()]);
     }
