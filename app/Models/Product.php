@@ -29,7 +29,7 @@ class Product extends Model
 
     public function scopeHomePage(Builder $query): void
     {
-        $query->where('on_home_page', true)->orderBy('sorting')->limit(8);
+        $query->where('on_home_page', true)->orderBy('sorting')->limit(9);
     }
 
     public function brand(): BelongsTo

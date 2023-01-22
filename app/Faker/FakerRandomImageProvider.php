@@ -9,13 +9,15 @@ class FakerRandomImageProvider extends Base
 {
     public function getRandomImage(string $fromPath, string $toPath): string
     {
-        if (!Storage::exists($toPath)) {
-            Storage::makeDirectory($toPath);
+        $storagePath = 'public/' . $toPath;
+
+        if (!Storage::exists($storagePath)) {
+            Storage::makeDirectory($storagePath);
         }
 
         $path = $this->generator->file(
             base_path($fromPath),
-            Storage::path($toPath),
+            Storage::path($storagePath),
             false
         );
 

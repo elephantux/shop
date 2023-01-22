@@ -14,7 +14,7 @@ class BrandFactory extends Factory
     {
         return [
             'title' => $this->faker->company(),
-            'thumbnail' => $this->faker->getRandomImage('tests/Fixtures/images/brands', 'public/images/brands'),
+            'thumbnail' => $this->faker->getRandomImage('tests/Fixtures/images/brands', 'images/brands'),
             'on_home_page' => $this->faker->boolean(),
             'sorting' => $this->faker->numberBetween(1, 999),
         ];
